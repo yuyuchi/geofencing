@@ -1,5 +1,5 @@
 /* global google */
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import Moment from 'react-moment';
 import Map from './Map';
 import './App.css';
@@ -8,13 +8,12 @@ const googleMapURL = `https://maps.googleapis.com/maps/api/js?libraries=geometry
 
 class App extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
-      content: 'Getting position...',
       polygons: [],
       selectedPolygons: [],
-    };
+    }
   }
 
   getCoordinates(polygon) {
@@ -32,7 +31,7 @@ class App extends Component {
 
   doneDrawing(polygon) {
     console.log('get polygon path', this.getCoordinates(polygon))
-    
+
     this.setState({ polygons: this.state.polygons.concat(polygon) });
     console.log('new state of polygons', this.state.polygons)
 
@@ -51,6 +50,7 @@ class App extends Component {
     shape.setOptions({
       fillColor: `#FF1493`,
       strokeColor: `#FF1493`,
+      selected: true,
     })
     this.setState({
       selectedPolygons: this.state.selectedPolygons.concat(shape)
@@ -60,7 +60,11 @@ class App extends Component {
   removePolygon() {
     console.log('this.state.selectedPolygons: ', this.state.selectedPolygons)
     this.state.selectedPolygons.map(poly => poly.setMap(null))
+    this.setState({
+      polygons: this.state.polygons.filter(polygon => polygon.selected !== true)
+    })    
   }
+
   getCurrentPosition() {
     const currentPosition = new google.maps.LatLng(this.state.center.lat, this.state.center.lng);
     return currentPosition;
@@ -74,6 +78,7 @@ class App extends Component {
           poly.setOptions({
             fillColor:  `#32CD32`,
             strokeColor: `#32CD32`,
+            selected: false,
           })
         )
       })

@@ -29,6 +29,7 @@ export default withScriptjs(withGoogleMap(props => (
           strokeWeight: 2,
           strokeColor: `#32CD32`,
           zIndex: 1,
+          selected: false,
         },
       }}
       onPolygonComplete={props.doneDrawing}
