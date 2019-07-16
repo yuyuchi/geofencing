@@ -26,7 +26,8 @@ export default withScriptjs(withGoogleMap(props => (
         polygonOptions: {
           fillColor: `#32CD32`,
           fillOpacity: 0.5,
-          strokeWeight: 0,
+          strokeWeight: 2,
+          strokeColor: `#32CD32`,
           zIndex: 1,
         },
       }}

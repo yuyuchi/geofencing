@@ -32,8 +32,7 @@ class App extends Component {
 
   doneDrawing(polygon) {
     console.log('get polygon path', this.getCoordinates(polygon))
-    console.log('typeof polygon', typeof polygon)
-
+    
     this.setState({ polygons: this.state.polygons.concat(polygon) });
     console.log('new state of polygons', this.state.polygons)
 
@@ -51,6 +50,7 @@ class App extends Component {
   setSelection(shape) {
     shape.setOptions({
       fillColor: `#FF1493`,
+      strokeColor: `#FF1493`,
     })
     this.setState({
       selectedPolygons: this.state.selectedPolygons.concat(shape)
@@ -72,7 +72,8 @@ class App extends Component {
       selectedPoly.map(poly => {
         return (
           poly.setOptions({
-            fillColor: `#32CD32`,
+            fillColor:  `#32CD32`,
+            strokeColor: `#32CD32`,
           })
         )
       })
