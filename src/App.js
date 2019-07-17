@@ -62,7 +62,6 @@ class App extends React.Component {
   }
 
   removePolygon() {
-    console.log('this.state.selectedPolygons: ', this.state.selectedPolygons)
     this.state.selectedPolygons.map(poly => poly.setMap(null))
     this.setState({
       polygons: this.state.polygons.filter(polygon => polygon.selected !== true)
