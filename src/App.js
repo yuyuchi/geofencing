@@ -92,9 +92,6 @@ class App extends React.Component {
   render() {
     let map = null;
       map = (<div>
-        <p>
-          Last fetched: <Moment interval={10000} fromNow>{this.state.lastFetched}</Moment>
-        </p>
         <Map
           googleMapURL={googleMapURL}
           loadingElement={
