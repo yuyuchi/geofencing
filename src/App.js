@@ -29,8 +29,6 @@ class App extends React.Component {
   }
 
   doneDrawing(polygon) {
-    console.log('get polygon path', this.getCoordinates(polygon))
-
     this.setState({ polygons: this.state.polygons.concat(polygon) });
     console.log('new state of polygons', this.state.polygons)
 
@@ -53,6 +51,13 @@ class App extends React.Component {
     })
     this.setState({
       selectedPolygons: this.state.selectedPolygons.concat(shape)
+    })
+  }
+
+  caculatePath() {
+    const polygons = this.state.polygons
+    polygons.map(poly => {
+      return console.log('get polygon path', this.getCoordinates(poly))
     })
   }
 
@@ -113,6 +118,7 @@ class App extends React.Component {
         {map}
         <button onClick={() => this.removePolygon()}>delete selected polygon(s)</button>
         <button onClick={() => this.clearSelection()}>clearSelection</button>
+        <button onClick={() => this.caculatePath()}>Caculate Path</button>
       </div>
     );
   }
