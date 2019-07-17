@@ -1,12 +1,12 @@
 /* global google */
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Moment from 'react-moment';
 import Map from './Map';
 import './App.css';
 
 const googleMapURL = `https://maps.googleapis.com/maps/api/js?libraries=geometry,drawing&key=${process.env.REACT_APP_MAPS_API_KEY}`;
 
-class App extends Component {
+class App extends React.Component {
   constructor(props) {
     super(props)
 
