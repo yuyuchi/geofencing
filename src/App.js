@@ -1,6 +1,5 @@
 /* global google */
 import React, { useEffect, useState } from 'react';
-import Moment from 'react-moment';
 import Map from './Map';
 import './App.css';
 
