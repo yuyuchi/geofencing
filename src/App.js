@@ -1,25 +1,55 @@
 /* global google */
-import React, { Component } from 'react';
-import Moment from 'react-moment';
-import Map from './Map';
-import './App.css';
+import React, { useState, useEffect } from 'react'
+import Map from './Map'
+import './App.css'
 
 const googleMapURL = `https://maps.googleapis.com/maps/api/js?libraries=geometry,drawing&key=${process.env.REACT_APP_MAPS_API_KEY}`;
 
-class App extends Component {
-  constructor(props) {
-    super(props);
+const App = () => {
+  const [polygons, setPolygons] = useState([])
+  const [selectedPolys, setSelectedPolys] = useState([])
 
-    this.state = {
-      content: 'Getting position...',
-      polygons: [],
-      selectedPolygons: [],
-    };
+  useEffect(() => {
+    console.log('polygons', polygons)
+    console.log('selected', selectedPolys)
+  }, [polygons, selectedPolys])
+
+  const doneDrawing = (poly) => {
+    setPolygons(prevPolys => [...prevPolys, poly])
+    google.maps.event.addListener(poly, 'click', () => setSelection(poly))
   }
 
-  getCoordinates(polygon) {
+  const removePolygon =  () => {
+    selectedPolys.map(poly => poly.setMap(null))
+    setPolygons(polygons.filter(polygon => polygon.selected !== true))
+    setSelectedPolys([])
+  }
+
+  const clearSelection = () => {
+    const selectedPoly = selectedPolys
+    if (selectedPoly) {
+      selectedPoly.map(poly => {
+        return (
+          poly.setOptions({
+            fillColor: `#32CD32`,
+            strokeColor: `#32CD32`,
+            selected: false,
+          })
+        )
+      })
+      setSelectedPolys([])
+    }
+  }
+
+  const caculatePath = () => {
+    polygons.map(poly => {
+      return console.log('get polygon path', getCoordinates(poly))
+    })
+  }
+
+  function getCoordinates(polygon) {
     const polyArray = polygon.getPath().getArray()
-    
+
     let paths = []
     polyArray.forEach(function (path) {
       paths.push({
@@ -30,65 +60,24 @@ class App extends Component {
     return paths
   }
 
-  doneDrawing(polygon) {
-    console.log('get polygon path', this.getCoordinates(polygon))
-    console.log('typeof polygon', typeof polygon)
-
-    this.setState({ polygons: this.state.polygons.concat(polygon) });
-    console.log('new state of polygons', this.state.polygons)
-
-    this.setState({
-      fence: new google.maps.Polygon({
-        paths: polygon.getPaths(),
-      }),
-    });
-
-    let newShape = polygon
-    google.maps.event.addListener(newShape, 'click', () => this.setSelection(newShape))
-    
+  function setSelection(shape) {    
+    if(shape.selected === false) {
+      shape.setOptions({
+        fillColor: `#FF1493`,
+        strokeColor: `#FF1493`,
+        selected: true,
+      })
+      setSelectedPolys(prevSelected => [...prevSelected, shape])
+    }
   }
 
-  setSelection(shape) {
-    shape.setOptions({
-      fillColor: `#FF1493`,
-    })
-    this.setState({
-      selectedPolygons: this.state.selectedPolygons.concat(shape)
-    })
-  }
-
-  removePolygon() {
-    console.log('this.state.selectedPolygons: ', this.state.selectedPolygons)
-    this.state.selectedPolygons.map(poly => poly.setMap(null))
-  }
-  getCurrentPosition() {
+  function getCurrentPosition() {
     const currentPosition = new google.maps.LatLng(this.state.center.lat, this.state.center.lng);
     return currentPosition;
   }
 
-  clearSelection() {
-    const selectedPoly = this.state.selectedPolygons
-    if (selectedPoly) {
-      selectedPoly.map(poly => {
-        return (
-          poly.setOptions({
-            fillColor: `#32CD32`,
-          })
-        )
-      })
-      
-      this.setState({
-        selectedPolygons: []
-      })
-    }
-  }
-
-  render() {
-    let map = null;
+  let map = null
       map = (<div>
-        <p>
-          Last fetched: <Moment interval={10000} fromNow>{this.state.lastFetched}</Moment>
-        </p>
         <Map
           googleMapURL={googleMapURL}
           loadingElement={
@@ -102,18 +91,17 @@ class App extends Component {
           }
           center={{ lat: 22.626151, lng: 120.3021181 }}
           zoom={15}
-          doneDrawing={(e) => this.doneDrawing(e)}
+          doneDrawing={doneDrawing}
         />
       </div>)
-
-    return (
-      <div className="App">
-        {map}
-        <button onClick={() => this.removePolygon()}>delete selected polygon(s)</button>
-        <button onClick={() => this.clearSelection()}>clearSelection</button>
-      </div>
-    );
-  }
+  return (
+    <div className="App">
+      {map}
+      <button onClick={removePolygon}>delete selected polygon(s)</button>
+      <button onClick={clearSelection}>clearSelection</button>
+      <button onClick={caculatePath}>Caculate Path</button>
+    </div>
+  )
 }
 
-export default App;
+export default App
